@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es"></html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -188,7 +188,7 @@
             margin-top: 0;
         }
 
-        #send-order, #print-ticket {
+        #send-order {
             display: block;
             margin: 20px auto;
             padding: 15px 30px;
@@ -201,61 +201,55 @@
             transition: background-color 0.2s;
         }
 
-        #send-order:hover, #print-ticket:hover {
+        #send-order:hover {
             background-color: #ff6a00;
         }
 
-        /* Estilo del ticket */
-        #ticket {
-            width: 300px;
-            margin: 20px auto;
+        /* Estilos para el formulario de edición */
+        .edit-form {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #333;
             padding: 20px;
-            background-color: white;
-            color: black;
-            border: 1px solid #ccc;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            font-family: 'Courier New', Courier, monospace;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+            color: white;
         }
 
-        #ticket h1, #ticket h2, #ticket p {
-            margin: 0;
-            padding: 0;
+        .edit-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background-color: #555;
+            color: white;
         }
 
-        #ticket h1 {
-            text-align: center;
-            margin-bottom: 10px;
+        .edit-form button {
+            padding: 10px 20px;
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
         }
 
-        #ticket h2 {
-            margin-top: 20px;
-            font-size: 18px;
+        .edit-form button:hover {
+            background-color: #ff6a00;
         }
 
-        #ticket p {
-            margin-bottom: 10px;
+        .edit-form .close-btn {
+            background-color: #888;
         }
 
-        #ticket .item {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        #ticket .item span {
-            display: inline-block;
-        }
-
-        #ticket .total {
-            margin-top: 20px;
-            font-weight: bold;
-            text-align: right;
-        }
-
-        #ticket .footer {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
+        .edit-form .close-btn:hover {
+            background-color: #aaa;
         }
     </style>
 </head>
@@ -310,21 +304,16 @@
             </label>
         </div>
         <button id="send-order">Enviar pedido por WhatsApp</button>
-        <button id="print-ticket">Imprimir ticket</button>
     </div>
 
-    <div id="ticket" style="display:none;">
-        <h1>LA PICA DE ROSITA</h1>
-        <p>Dirección: PRESBITERO MORAGA #236</p>
-        <p>Teléfono: +56935442424</p>
-        <h2>Pedido</h2>
-        <div id="ticket-items">
-            <!-- Elementos del ticket se mostrarán aquí -->
-        </div>
-        <div class="total">
-            <p>Total: $<span id="ticket-total">0.00</span></p>
-        </div>
-        <p class="footer">¡Gracias por su compra!</p>
+    <!-- Formulario de edición -->
+    <div class="edit-form" id="edit-form">
+        <h3>Editar Producto</h3>
+        <input type="text" id="edit-name" placeholder="Nombre del producto">
+        <input type="number" id="edit-price" placeholder="Precio del producto">
+        <input type="hidden" id="edit-id">
+        <button onclick="saveEdit()">Guardar</button>
+        <button class="close-btn" onclick="closeEditForm()">Cerrar</button>
     </div>
 
     <script>
@@ -346,8 +335,10 @@
         const cartTotal = document.getElementById('cart-total');
         const deliveryAddress = document.getElementById('delivery-address');
         const searchBar = document.getElementById('search-bar');
-        const ticketItems = document.getElementById('ticket-items');
-        const ticketTotal = document.getElementById('ticket-total');
+        const editForm = document.getElementById('edit-form');
+        const editName = document.getElementById('edit-name');
+        const editPrice = document.getElementById('edit-price');
+        const editId = document.getElementById('edit-id');
         let cart = [];
 
         // Generar productos
@@ -360,6 +351,7 @@
                     <h3>${product.name}</h3>
                     <p>$${product.price}</p>
                     <button onclick="addToCart(${product.id})">Agregar al carrito</button>
+                    <button onclick="editProduct(${product.id})">Editar</button>
                 `;
                 productList.appendChild(productItem);
             });
@@ -433,6 +425,7 @@
                     <h3>${product.name}</h3>
                     <p>$${product.price}</p>
                     <button onclick="addToCart(${product.id})">Agregar al carrito</button>
+                    <button onclick="editProduct(${product.id})">Editar</button>
                 `;
                 productList.appendChild(productItem);
             });
@@ -458,7 +451,7 @@
             message += `Opción de entrega: ${deliveryOption === 'address' ? `A domicilio (${deliveryAddress.value})` : 'Recoger en local'}\n`;
             message += `Opción de pago: ${paymentOption === 'card' ? 'Tarjeta de crédito' : paymentOption === 'cash' ? 'Efectivo' : 'Transferencia'}`;
 
-            const whatsappURL = `https://api.whatsapp.com/999613752&text=${encodeURIComponent(message)}`;
+            const whatsappURL = `https://api.whatsapp.com/send?phone=935127682=${encodeURIComponent(message)}`;
             window.open(whatsappURL, '_blank');
         });
 
@@ -468,48 +461,37 @@
             cartDetails.style.display = cartDetails.style.display === 'block' ? 'none' : 'block';
         });
 
-        // Imprimir ticket
-        document.getElementById('print-ticket').addEventListener('click', function() {
-            const deliveryOption = document.querySelector('input[name="delivery"]:checked').value;
-            const paymentOption = document.querySelector('input[name="payment"]:checked').value;
-
-            let ticketContent = `Pedido:\n\n`;
-            cart.forEach(product => {
-                ticketContent += `${product.name} - $${product.price} x ${product.quantity}\n`;
-            });
-            ticketContent += `\nTotal: $${cartSubtotal.textContent}\n`;
-            ticketContent += `Opción de entrega: ${deliveryOption === 'address' ? `A domicilio (${deliveryAddress.value})` : 'Recoger en local'}\n`;
-            ticketContent += `Opción de pago: ${paymentOption === 'card' ? 'Tarjeta de crédito' : paymentOption === 'cash' ? 'Efectivo' : 'Transferencia'}`;
-
-            updateTicket(ticketContent);
-            printTicket();
-        });
-
-        function updateTicket(content) {
-            ticketItems.innerHTML = '';
-            cart.forEach(product => {
-                const ticketItem = document.createElement('div');
-                ticketItem.classList.add('item');
-                ticketItem.innerHTML = `
-                    <span>${product.name} x${product.quantity}</span>
-                    <span>$${product.price}</span>
-                `;
-                ticketItems.appendChild(ticketItem);
-            });
-            ticketTotal.textContent = cartSubtotal.textContent;
-            document.getElementById('ticket').style.display = 'block';
+        // Editar producto
+        window.editProduct = function(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                editId.value = product.id;
+                editName.value = product.name;
+                editPrice.value = product.price;
+                editForm.style.display = 'block';
+            }
         }
 
-        function printTicket() {
-            const ticket = document.getElementById('ticket');
-            const printWindow = window.open('', '', 'width=300,height=600');
-            printWindow.document.write(`<html><head><title>Ticket</title></head><body>${ticket.outerHTML}</body></html>`);
-            printWindow.document.close();
-            printWindow.focus();
-            printWindow.print();
-            printWindow.close();
+        // Guardar cambios de edición
+        window.saveEdit = function() {
+            const id = parseInt(editId.value);
+            const newName = editName.value;
+            const newPrice = editPrice.value;
+
+            const product = products.find(p => p.id === id);
+            if (product) {
+                product.name = newName;
+                product.price = newPrice;
+
+                generateProducts();
+                closeEditForm();
+            }
+        }
+
+        // Cerrar formulario de edición
+        window.closeEditForm = function() {
+            editForm.style.display = 'none';
         }
     </script>
 </body>
 </html>
-
