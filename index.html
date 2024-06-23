@@ -451,7 +451,7 @@
             message += `Opción de entrega: ${deliveryOption === 'address' ? `A domicilio (${deliveryAddress.value})` : 'Recoger en local'}\n`;
             message += `Opción de pago: ${paymentOption === 'card' ? 'Tarjeta de crédito' : paymentOption === 'cash' ? 'Efectivo' : 'Transferencia'}`;
 
-            const whatsappURL = `https://api.whatsapp.com/send?phone=999613752=${encodeURIComponent(message)}`;
+            const whatsappURL = `https://api.whatsapp.com/send?phone=56999613752=${encodeURIComponent(message)}`;
             window.open(whatsappURL, '_blank');
         });
 
