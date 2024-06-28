@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Punto de Pedidos Futurista</title>
+    <title>LA PICÁ DE ROSITA</title>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -39,7 +38,7 @@
             padding: 10px;
             border: none;
             border-radius: 5px;
-            background-color: #333;
+            background-color: #f3eeee;
             color: #f2f2f2;
         }
 
@@ -55,6 +54,7 @@
             align-items: center;
             gap: 10px;
             background-color: #333;
+;
             padding: 10px;
             border-radius: 5px;
             color: white;
@@ -206,51 +206,15 @@
             background-color: #ff6a00;
         }
 
-        /* Estilos para el formulario de edición */
-        .edit-form {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #333;
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-            z-index: 1001;
-            color: white;
         }
 
-        .edit-form input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 5px;
-            background-color: #555;
-            color: white;
-        }
-
-        .edit-form button {
-            padding: 10px 20px;
-            background-color: #ff4d4d;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .edit-form button:hover {
-            background-color: #ff6a00;
-        }
-
-        .edit-form .close-btn {
-            background-color: #888;
-        }
-
-        .edit-form .close-btn:hover {
-            background-color: #aaa;
+        .logo img {
+            max-width: 200px;
         }
     </style>
 </head>
@@ -265,6 +229,10 @@
             <span>productos - $<span id="cart-subtotal">0.00</span></span>
         </div>
     </header>
+
+    <div class="logo">
+        <img src="https://i.postimg.cc/Rh24T8XL/Photoroom-20240627-230839.png" alt="Logo">
+    </div>
     
     <main>
         <div class="product-list" id="product-list">
@@ -295,7 +263,7 @@
         <div class="payment-options">
             <h2>Opciones de pago</h2>
             <label>
-                <input type="radio" name="payment" value="card" checked> Tarjeta de crédito
+                <input type="radio" name="payment" value="card" checked> Tarjeta de débito
             </label>
             <label>
                 <input type="radio" name="payment" value="cash"> Efectivo
@@ -307,26 +275,51 @@
         <button id="send-order">Enviar pedido por WhatsApp</button>
     </div>
 
-    <!-- Formulario de edición -->
-    <div class="edit-form" id="edit-form">
-        <h3>Editar Producto</h3>
-        <input type="text" id="edit-name" placeholder="Nombre del producto">
-        <input type="number" id="edit-price" placeholder="Precio del producto">
-        <input type="hidden" id="edit-id">
-        <button onclick="saveEdit()">Guardar</button>
-        <button class="close-btn" onclick="closeEditForm()">Cerrar</button>
-    </div>
-
     <script>
         // Lista de productos
-        const products = [];
-        for (let i = 1; i <= 40; i++) {
-            products.push({
-                id: i,
-                name: 'Producto ' + i,
-                price: (Math.random() * 100).toFixed(2)
-            });
-        }
+        const products = [
+            { id: 1, name: 'Ave Palta Mayo', price: 2500 },
+            { id: 2, name: 'Ave Mayo', price: 2200 },
+            { id: 3, name: 'Ave Palta', price: 2500 },
+            { id: 4, name: 'Ave Solo', price: 2000 },
+            { id: 5, name: 'Aliado Palta', price: 2500 },
+            { id: 6, name: 'Aliado Margarina', price: 2200 },
+            { id: 7, name: 'Aliado Solo', price: 2000 },
+            { id: 8, name: 'Lomito Italiano', price: 4500 },
+            { id: 9, name: 'Lomito Luco', price: 4000 },
+            { id: 10, name: 'Lomito Palta', price: 4000 },
+            { id: 11, name: 'Churrasco Italiano', price: 5000 },
+            { id: 12, name: 'Barros Luco', price: 4500 },
+            { id: 13, name: 'Churrasco Tomate', price: 4000 },
+            { id: 14, name: 'Churrasco Palta', price: 4300 },
+            { id: 15, name: 'Churrasco Solo', price: 3700 },
+            { id: 16, name: 'Queso Caliente Palta', price: 3000 },
+            { id: 17, name: 'Queso Palta', price: 2500 },
+            { id: 18, name: 'Barro Jarpa', price: 2400 },
+            { id: 19, name: 'Tostada Palta', price: 1300 },
+            { id: 20, name: 'Tostada Margarina', price: 800 },
+            { id: 21, name: 'Lomito Solo', price: 3500 },
+            { id: 22, name: 'Pan con Huevo Queso', price: 2400 },
+            { id: 23, name: 'Pan Con Huevo', price: 2000 },
+            { id: 24, name: 'Queso Caliente', price: 2500 },
+            { id: 25, name: 'Ass palta', price: 2700 },
+            { id: 26, name: 'Ass Italiano', price: 2800 },
+            { id: 27, name: 'Completo Italiano', price: 1800 },
+            { id: 28, name: 'Arrollado palta', price: 2500 },
+            { id: 29, name: 'Arrollado Margarina', price: 2000 },
+            { id: 30, name: 'Ass Luco', price: 2400 },
+            { id: 31, name: 'Consome', price: 1000 },
+            { id: 32, name: 'cafe', price: 800 },
+            { id: 33, name: 'cafe con Leche', price: 1000 },
+            { id: 34, name: 'Milo', price: 800 },
+            { id: 35, name: 'Milo con Leche', price: 1000 },
+            { id: 36, name: 'Te', price: 800 },
+            { id: 37, name: 'Te con Leche', price: 1000 },
+            { id: 38, name: 'Leche sola', price: 800 },
+            { id: 39, name: 'Te De Hierbas', price: 800 },
+            { id: 40, name: 'Coca Cola 1/2', price: 1300 }
+            
+        ];
 
         const productList = document.getElementById('product-list');
         const cartCount = document.getElementById('cart-count');
@@ -336,10 +329,6 @@
         const cartTotal = document.getElementById('cart-total');
         const deliveryAddress = document.getElementById('delivery-address');
         const searchBar = document.getElementById('search-bar');
-        const editForm = document.getElementById('edit-form');
-        const editName = document.getElementById('edit-name');
-        const editPrice = document.getElementById('edit-price');
-        const editId = document.getElementById('edit-id');
         let cart = [];
 
         // Generar productos
@@ -350,9 +339,8 @@
                 productItem.classList.add('product-item');
                 productItem.innerHTML = `
                     <h3>${product.name}</h3>
-                    <p>$${product.price}</p>
+                    <p>$${product.price.toFixed(2)}</p>
                     <button onclick="addToCart(${product.id})">Agregar al carrito</button>
-                    <button onclick="editProduct(${product.id})">Editar</button>
                 `;
                 productList.appendChild(productItem);
             });
@@ -382,7 +370,7 @@
             cart.forEach(product => {
                 const listItem = document.createElement('li');
                 listItem.innerHTML = `
-                    ${product.name} - $${product.price} x ${product.quantity}
+                    ${product.name} - $${product.price.toFixed(2)} x ${product.quantity}
                     <div class="quantity-controls">
                         <button onclick="decrementQuantity(${product.id})">-</button>
                         <span>${product.quantity}</span>
@@ -424,9 +412,8 @@
                 productItem.classList.add('product-item');
                 productItem.innerHTML = `
                     <h3>${product.name}</h3>
-                    <p>$${product.price}</p>
+                    <p>$${product.price.toFixed(2)}</p>
                     <button onclick="addToCart(${product.id})">Agregar al carrito</button>
-                    <button onclick="editProduct(${product.id})">Editar</button>
                 `;
                 productList.appendChild(productItem);
             });
@@ -446,11 +433,11 @@
 
             let message = `Pedido:\n\n`;
             cart.forEach(product => {
-                message += `${product.name} - $${product.price} x ${product.quantity}\n`;
+                message += `${product.name} - $${product.price.toFixed(2)} x ${product.quantity}\n`;
             });
             message += `\nTotal: $${cartSubtotal.textContent}\n`;
             message += `Opción de entrega: ${deliveryOption === 'address' ? `A domicilio (${deliveryAddress.value})` : 'Recoger en local'}\n`;
-            message += `Opción de pago: ${paymentOption === 'card' ? 'Tarjeta de crédito' : paymentOption === 'cash' ? 'Efectivo' : 'Transferencia'}`;
+            message += `Opción de pago: ${paymentOption === 'card' ? 'Tarjeta de débito' : paymentOption === 'cash' ? 'Efectivo' : 'Transferencia'}`;
 
             const whatsappURL = `https://wa.me/56999613752?text=${encodeURIComponent(message)}`;
             window.open(whatsappURL, '_blank');
@@ -461,40 +448,6 @@
         floatingCart.addEventListener('click', function() {
             cartDetails.style.display = cartDetails.style.display === 'block' ? 'none' : 'block';
         });
-
-        // Editar producto
-        window.editProduct = function(productId) {
-            const product = products.find(p => p.id === productId);
-            if (product) {
-                editId.value = product.id;
-                editName.value = product.name;
-                editPrice.value = product.price;
-                editForm.style.display = 'block';
-            }
-        }
-
-        // Guardar cambios de edición
-        window.saveEdit = function() {
-            const id = parseInt(editId.value);
-            const newName = editName.value;
-            const newPrice = editPrice.value;
-
-            const product = products.find(p => p.id === id);
-            if (product) {
-                product.name = newName;
-                product.price = newPrice;
-
-                generateProducts();
-                closeEditForm();
-            }
-        }
-
-        // Cerrar formulario de edición
-        window.closeEditForm = function() {
-            editForm.style.display = 'none';
-        }
     </script>
 </body>
 </html>
-
-
